@@ -33,26 +33,35 @@
 
     if($method == "POST"){
         $data = urldecode(file_get_contents('php://input'));
-        
+        // parse_str($temp, $value);
         $value = json_decode($data, TRUE);
 
-        $sql = "INSERT INTO tbl_students (name, course) VALUES (?,?)";
-    
+        //$sql = "INSERT INTO tbl_students (name, course) VALUES (?,?)";
+        $name = $value['txtName'];
+        $course =$value['txtCourse'];
       
         $con = openConn(); 
-       
-        if($stmt = mysqli_prepare($con, $sql)){
-            mysqli_stmt_bind_param($stmt, "ss", $name, $course);
+        $str ="
+                        INSERT INTO tbl_students(name, course)
+                        VALUES('$name', '$course')
+                    ";
+                    if(mysqli_query($con, $str)){
+                        echo 'Succesfully Added';
+                    }          
+                    else
+                        echo 'Error: Failed to insert record';
+        // if($stmt = mysqli_prepare($con, $sql)){
+        //     mysqli_stmt_bind_param($stmt, "ss", $name, $course);
             
-            $name = $value['txtName'];  
-            $course = $value['txtCourse'];  
-            mysqli_stmt_execute($stmt);
-        }
-        else{
-            echo json_decode("No Record Found");
-        }
+        //     $name = $value['txtName'];  
+        //     $course = $value['txtCourse'];  
+        //     mysqli_stmt_execute($stmt);
+        // }
+        // else{
+        //     echo json_decode("No Record Found");
+        // }
         
-        mysqli_stmt_close($stmt);
+        // mysqli_stmt_close($stmt);
         closeConn($con);  
         $response =
         [
